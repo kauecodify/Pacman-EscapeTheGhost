@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            background-color: black;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: yellow;
+            font-family: 'Press Start 2P', cursive;
+        }
+
+        #container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #canvas {
+            background-color: #000;
+            border: 4px solid #333;
+            image-rendering: pixelated;
+        }
+
+        .logo-container {
+            text-align: center;
+            opacity: 0;
+            transition: opacity 1s ease;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .start-button {
+            font-size: 16px;
+            padding: 10px 20px;
+            background-color: yellow;
+            border: none;
+            cursor: pointer;
+            font-family: 'Press Start 2P', cursive;
+            outline: none;
+        }
+
+        .start-button:hover {
+            background-color: #f4d03f;
+        }
+
+        #game-container {
+            position: relative;
+            opacity: 0.2;
+            transition: opacity 1s ease;
+        }
+
+        .game-active #game-container {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div class="logo-container">
+            <div class="logo">
+                <h2>Pacman</h2>
+                <h5>Escape the Ghost</h5>
+            </div>
+            <img src="pacman.png" alt="Pacman" width="50px" height="50px">
+        </div>
+        <button class="start-button">Start</button>
+        <div id="game-container">
+            <canvas id="canvas" width="500" height="500"></canvas>
+        </div>
+    </div>
+
+    <div id="restart-container style="display:">
+
+    <div style="display:none;">
+        <img id="animation" src="animations.gif" width="140" height="20">
+        <img id="ghosts" src="ghost.png" width="140" height="20">
+    </div>
+    <script src="ghost.js"></script>
+    <script src="pacman.js"></script>
+    <script src="game.js"></script>
+    <script src="map.js" type="module"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelector('.logo-container').style.opacity = 1;
+            const startButton = document.querySelector('.start-button');
+            startButton.addEventListener('click', () => {
+                document.querySelector('.logo-container').style.display = 'none';
+                document.getElementById('container').classList.add('game-active');
+                document.getElementById('canvas').style.filter = 'none';
+                startGame();
+            });
+        });
+
+        function startGame() {
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+
+            let pacman = new Pacman(50, 50, 20, 20);
+            let ghost = new Ghost(100, 100, 20, 20);
+
+            let map = new Map(canvas, ctx, pacman);
+
+            function gameLoop() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                pacman.update();
+                pacman.draw(ctx);
+                ghost.update();
+                ghost.draw(ctx);
+                map.update();
+                requestAnimationFrame(gameLoop);
+            }
+
+            document.addEventListener('keydown', (event) => {
+                switch (event.key) {
+                    case 'a':
+                        pacman.moveLeft();
+                        break;
+                    case 'd':
+                        pacman.moveRight();
+                        break;
+                    case 'w':
+                        pacman.moveUp();
+                        break;
+                    case 's':
+                        pacman.moveDown();
+                        break;
+                }
+            });
+
+            gameLoop();
+        }
+    </script>
+</body>
+</html>
