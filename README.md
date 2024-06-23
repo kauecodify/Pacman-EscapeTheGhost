@@ -1,6 +1,6 @@
 ![png](pacman.png)
 
-**GAME ARCADE**
+**GAME ARCADE** /
 **Pacman - EscapeTheGhost**
 ----------------------------------------------------------
 
